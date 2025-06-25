@@ -229,10 +229,21 @@ window.addEventListener('DOMContentLoaded', () => {
 </head>
 <body>
 
-  <h2>Latest Movies</h2>
+  
   <div class="container">
     <div class="movies">
-      
+
+      <!-- Movie 11 -->
+      <div class="movie" tabindex="0" onclick="openModal('modal11')">
+        <div class="poster-wrapper">
+          <span class="language-badge">Malayalam</span>
+          <div class="spinner"></div>
+          <img src="https://image.tmdb.org/t/p/original/4EtwrrfbHTU4wCiLiXqz6oIw2hN.jpg" alt="Movie 1">
+          <div class="play-button"></div>
+        </div>
+        <div class="info">Ronth (2025)</div>
+      </div>
+        
       <!-- Movie 10 -->
       <div class="movie" tabindex="0" onclick="openModal('modal10')">
         <div class="poster-wrapper">
@@ -346,7 +357,19 @@ window.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
   
-  
+
+<!-- Modal 11 -->
+  <div id="modal11" class="modal" onclick="closeModal('modal11')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="close" onclick="closeModal('modal11')">×</span>
+      <h3>Ronth (2025) Malayalam</h3>
+      <a href="go:Ronth-on">Watch Online</a>
+      <a href="go:Ronth">Download</a>
+      <a href="#">Telegram File</a>
+    </div>
+  </div>
+
+
   <!-- Modal 10 -->
   <div id="modal10" class="modal" onclick="closeModal('modal10')">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -354,7 +377,7 @@ window.addEventListener('DOMContentLoaded', () => {
       <h3>Pariwar (2025) Malayalam</h3>
       <a href="go:pari-on">Watch Online</a>
       <a href="go:pariwar">Download</a>
-      <a href="#">Telegram File</a>
+      <a href="https://t.me/Mamitha_M4U_bot?start=getfile-pariwar">Telegram File</a>
     </div>
   </div>
   
