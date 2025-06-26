@@ -233,6 +233,17 @@ window.addEventListener('DOMContentLoaded', () => {
   <div class="container">
     <div class="movies">
 
+      <!-- Movie 12 -->
+      <div class="movie" tabindex="0" onclick="openModal('modal12')">
+        <div class="poster-wrapper">
+          <span class="language-badge">Malayalam</span>
+          <div class="spinner"></div>
+          <img src="https://i.ibb.co/SDQKnTDC/IMG-20250626-183118-823.jpg" alt="Movie 1">
+          <div class="play-button"></div>
+        </div>
+        <div class="info">Undead (2025)</div>
+      </div>
+        
       <!-- Movie 11 -->
       <div class="movie" tabindex="0" onclick="openModal('modal11')">
         <div class="poster-wrapper">
@@ -356,7 +367,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
     </div>
   </div>
-  
+
+    <!-- Modal 12 -->
+  <div id="modal12" class="modal" onclick="closeModal('modal12')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="close" onclick="closeModal('modal12')">×</span>
+      <h3>Undead (2025) Malayalam</h3>
+      <a href="go:Undead-on">Watch Online</a>
+      <a href="go:Undead">Download</a>
+      <a href="https://t.me/Mamitha_M4U_bot?start=getfile-undead">Telegram File</a>
+    </div>
+  </div>
 
 <!-- Modal 11 -->
   <div id="modal11" class="modal" onclick="closeModal('modal11')">
