@@ -233,6 +233,28 @@ window.addEventListener('DOMContentLoaded', () => {
   <div class="container">
     <div class="movies">
 
+       <!-- Movie 14 -->
+      <div class="movie" tabindex="0" onclick="openModal('modal14')">
+        <div class="poster-wrapper">
+          <span class="language-badge">Malayalam</span>
+          <div class="spinner"></div>
+          <img src="https://image.tmdb.org/t/p/original/A3t50UA1rl6Yt15eMJPkpMe2eMh.jpg" alt="Movie 1">
+          <div class="play-button"></div>
+        </div>
+        <div class="info">Azadi (2025)</div>
+      </div>
+        
+      <!-- Movie 13 -->
+      <div class="movie" tabindex="0" onclick="openModal('modal13')">
+        <div class="poster-wrapper">
+          <span class="language-badge">Tamil</span>
+          <div class="spinner"></div>
+          <img src="https://image.tmdb.org/t/p/original/bSrLiimjvqwwiMPJErvhGppTUAf.jpg" alt="Movie 1">
+          <div class="play-button"></div>
+        </div>
+        <div class="info">The Verdict (2025)</div>
+      </div>
+        
       <!-- Movie 12 -->
       <div class="movie" tabindex="0" onclick="openModal('modal12')">
         <div class="poster-wrapper">
@@ -368,6 +390,29 @@ window.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
+
+   <!-- Modal 14 -->
+  <div id="modal14" class="modal" onclick="closeModal('modal14')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="close" onclick="closeModal('modal14')">×</span>
+      <h3>Azadi (2025) Malayalam</h3>
+      <a href="go:Azadi-on">Watch Online</a>
+      <a href="go:Azadi">Download</a>
+      <a href="https://t.me/Mamitha_M4U_bot?start=getfile-Azadi">Telegram File</a>
+    </div>
+  </div>
+
+   <!-- Modal 13 -->
+  <div id="modal13" class="modal" onclick="closeModal('modal13')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="close" onclick="closeModal('modal13')">×</span>
+      <h3>The Verdict (2025) Malayalam</h3>
+      <a href="go:Verdict-on">Watch Online</a>
+      <a href="go:Verdict">Download</a>
+      <a href="https://t.me/Mamitha_M4U_bot?start=getfile-The-Verdict">Telegram File</a>
+    </div>
+  </div>
+    
     <!-- Modal 12 -->
   <div id="modal12" class="modal" onclick="closeModal('modal12')">
     <div class="modal-content" onclick="event.stopPropagation()">
