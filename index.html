@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ml">
 <head>
@@ -29,7 +28,7 @@
       display: flex; justify-content: center; align-items: center;
     }
     .play-button::before {
-      content: '\25B6'; color: white; font-size: 16px; padding-left: 2px;
+      content: '\\25B6'; color: white; font-size: 16px; padding-left: 2px;
     }
     .movie-title {
       margin: 8px 8px 10px; font-size: 14px; font-weight: 600;
@@ -84,9 +83,9 @@
           card.setAttribute("onclick", `openModal('${movie.id}')`);
           card.innerHTML = `
             <div class="badge">${movie.badge}</div>
-            <img src="\${movie.image}" alt="\${movie.title}" />
+            <img src="${movie.image}" alt="${movie.title}" />
             <div class="play-button"></div>
-            <p class="movie-title">\${movie.title}</p>
+            <p class="movie-title">${movie.title}</p>
           `;
           movieGrid.appendChild(card);
           const modal = document.createElement("div");
@@ -96,10 +95,10 @@
           modal.innerHTML = `
             <div class="modal-content" onclick="event.stopPropagation()">
               <button class="close-btn" onclick="closeModal('${movie.id}')">×</button>
-              <h3>\${movie.title}</h3>
-              <a href="\${movie.watch}">🎥 Watch Online</a>
-              <a href="\${movie.download}">⬇️ Download</a>
-              <a href="\${movie.telegram}">📲 Telegram File</a>
+              <h3>${movie.title}</h3>
+              <a href="${movie.watch}">🎥 Watch Online</a>
+              <a href="${movie.download}">⬇️ Download</a>
+              <a href="${movie.telegram}">📲 Telegram File</a>
             </div>
           `;
           modalContainer.appendChild(modal);
