@@ -27,8 +27,10 @@
       background: rgba(0, 0, 0, 0.6); border-radius: 50%; width: 40px; height: 40px;
       display: flex; justify-content: center; align-items: center;
     }
-    .play-button::before {
-      content: '\\25B6'; color: white; font-size: 16px; padding-left: 2px;
+    .play-button svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
     }
     .movie-title {
       margin: 8px 8px 10px; font-size: 14px; font-weight: 600;
@@ -71,6 +73,7 @@
     <div class="grid" id="movieGrid"></div>
   </main>
   <div id="modalContainer"></div>
+
   <script>
     fetch('movies.json')
       .then(response => response.json())
@@ -84,10 +87,13 @@
           card.innerHTML = `
             <div class="badge">${movie.badge}</div>
             <img src="${movie.image}" alt="${movie.title}" />
-            <div class="play-button"></div>
+            <div class="play-button">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
             <p class="movie-title">${movie.title}</p>
           `;
           movieGrid.appendChild(card);
+          
           const modal = document.createElement("div");
           modal.className = "modal";
           modal.id = movie.id;
@@ -104,6 +110,7 @@
           modalContainer.appendChild(modal);
         });
       });
+
     function openModal(id) {
       document.getElementById(id).style.display = 'flex';
     }
