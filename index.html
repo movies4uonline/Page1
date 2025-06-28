@@ -56,13 +56,6 @@
       border: none; font-size: 22px; font-weight: bold; color: #555; cursor: pointer;
     }
     .close-btn:hover { color: #111; }
-    @media (min-width: 768px) {
-      .header h2 { font-size: 24px; } .movie-title { font-size: 15px; }
-    }
-    @media (min-width: 1024px) {
-      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-      .movie-title { font-size: 16px; }
-    }
   </style>
 </head>
 <body>
@@ -80,6 +73,7 @@
       .then(movies => {
         const movieGrid = document.getElementById("movieGrid");
         const modalContainer = document.getElementById("modalContainer");
+
         movies.forEach((movie) => {
           const card = document.createElement("div");
           card.className = "movie-card";
@@ -93,20 +87,31 @@
             <p class="movie-title">${movie.title}</p>
           `;
           movieGrid.appendChild(card);
-          
+
           const modal = document.createElement("div");
           modal.className = "modal";
           modal.id = movie.id;
           modal.setAttribute("onclick", `closeModal('${movie.id}')`);
-          modal.innerHTML = `
-            <div class="modal-content" onclick="event.stopPropagation()">
-              <button class="close-btn" onclick="closeModal('${movie.id}')">×</button>
-              <h3>${movie.title}</h3>
-              <a href="${movie.watch}">🎥 Watch Online</a>
-              <a href="${movie.download}">⬇️ Download</a>
-              <a href="${movie.telegram}">📲 Telegram File</a>
-            </div>
+
+          const modalContent = document.createElement("div");
+          modalContent.className = "modal-content";
+          modalContent.setAttribute("onclick", "event.stopPropagation()");
+          modalContent.innerHTML = `
+            <button class="close-btn" onclick="closeModal('${movie.id}')">×</button>
+            <h3>${movie.title}</h3>
           `;
+
+          movie.watch?.forEach(w =>
+            modalContent.innerHTML += `<a href="${w.link}">🎥 Watch [${w.label}]</a>`
+          );
+          movie.downloads?.forEach(d =>
+            modalContent.innerHTML += `<a href="${d.link}">⬇️ Download [${d.label}]</a>`
+          );
+          if (movie.telegram) {
+            modalContent.innerHTML += `<a href="${movie.telegram}">📲 Telegram File</a>`;
+          }
+
+          modal.appendChild(modalContent);
           modalContainer.appendChild(modal);
         });
       });
@@ -114,6 +119,7 @@
     function openModal(id) {
       document.getElementById(id).style.display = 'flex';
     }
+
     function closeModal(id) {
       document.getElementById(id).style.display = 'none';
     }
