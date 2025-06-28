@@ -4,19 +4,19 @@
     "title": "Evol (2025)",
     "badge": "HD",
     "image": "https://image.tmdb.org/t/p/original/buXclUbb5mcZyug4TXzBrlYLsEP.jpg",
-    "Watch Online": "go:Evol-on",
-    "Download": "go:Evol",
-    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Evol"
+    "watch": "go:Evol-on",
+    "download": "go:Evol",
+    "telegram": "https://t.me/Mamitha_M4U_bot?start=getfile-Evol"
   },
   {
     "id": "modal2",
     "title": "Azadi (2025)",
     "badge": "HD",
     "image": "https://image.tmdb.org/t/p/original/A3t50UA1rl6Yt15eMJPkpMe2eMh.jpg",
-    "Watch Online [Malayalam]": "go:Azadi-on",
-    "Watch Online [Tamil]": "go:Azadi2-on",
+    "watch [Malayalam]": "go:Azadi-on",
+    "watch [Tamil]": "go:Azadi2-on",
     "download [Malayalam + Tamil]": "go:Azadi",
-    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Azadi"
+    "telegram": "https://t.me/Mamitha_M4U_bot?start=getfile-Azadi"
   },
   {
     "id": "modal3",
