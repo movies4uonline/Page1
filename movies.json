@@ -1,6 +1,15 @@
 [
   {
     "id": "modal1",
+    "title": "Evol (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/buXclUbb5mcZyug4TXzBrlYLsEP.jpg",
+    "Watch Online": "go:Evol-on",
+    "Download": "go:Evol",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Evol"
+  },
+  {
+    "id": "modal2",
     "title": "Azadi (2025)",
     "badge": "HD",
     "image": "https://image.tmdb.org/t/p/original/A3t50UA1rl6Yt15eMJPkpMe2eMh.jpg",
@@ -14,16 +23,119 @@
     "telegram": "https://t.me/Mamitha_M4U_bot?start=getfile-Azadi"
   },
   {
-    "id": "modal2",
+    "id": "modal3",
+    "title": "The Verdict (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/bSrLiimjvqwwiMPJErvhGppTUAf.jpg",
+    "Watch Online": "go:Verdict-on",
+    "Download": "go:Verdict",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-The-Verdict"
+  },
+  {
+    "id": "modal4",
+    "title": "Undead (2025)",
+    "badge": "HD",
+    "image": "https://i.ibb.co/SDQKnTDC/IMG-20250626-183118-823.jpg",
+    "Watch Online": "go:Undead-on",
+    "Download": "go:Undead",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Undead"
+  },
+  {
+    "id": "modal5",
+    "title": "Ronth (2025)",
+    "badge": "Cam",
+    "image": "https://image.tmdb.org/t/p/original/4EtwrrfbHTU4wCiLiXqz6oIw2hN.jpg",
+    "Watch Online": "go:Ronth-on",
+    "Download": "go:Ronth",
+    "Telegram File": "#"
+  },
+  {
+    "id": "modal6",
     "title": "Pariwar (2025)",
     "badge": "HD",
     "image": "https://image.tmdb.org/t/p/original/fHdCRIuWt9UAnJqWR8WvyVc8Url.jpg",
-    "watch": [
-      { "label": "Watch Online", "link": "go:Pari-on" }
-    ],
-    "downloads": [
-      { "label": "Download", "link": "go:Pariwar" }
-    ],
-    "telegram": "https://t.me/Mamitha_M4U_bot?start=getfile-Pariwar"
+    "Watch Online": "go:Pari-on",
+    "Download": "go:Pariwar",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Pariwar"
+  },
+  {
+    "id": "modal7",
+    "title": "Maharani (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/yyVZU0gyvRbLyKYdNa23GLF5jje.jpg",
+    "Watch Online": "go:Maha-on",
+    "Download": "go:Maharani",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Maharani"
+  },
+  {
+    "id": "modal8",
+    "title": "Sthanarthi Sreekuttan (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/adOgLdhbqOJgLZ7ufB0vGRUiIE.jpg",
+    "Watch Online": "go:Sthana-on",
+    "Download": "go:Sthana",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Sthanarthi-Sreekuttan"
+  },
+  {
+    "id": "modal9",
+    "title": "Lovely (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/g4mcMOjcQXdDBqxsU2BrQ6uuNDL.jpg",
+    "Watch Online": "go:Lovely-on",
+    "Download": "go:Lovely",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Lovely"
+  },
+  {
+    "id": "modal10",
+    "title": "Kerala Crime Files (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/efg6YPbDLkvu0s2pHidVAjfJSn6.jpg",
+    "Watch Online": "go:Kera-on",
+    "Download [Tam Mal Tel Hin Kan]": "go:Kerala",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Kerala-crime-Files"
+  },
+  {
+    "id": "modal11",
+    "title": "Prince And Family (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/bsFg2yv4zeOSbch0K3xxObrvux1.jpg",
+    "Watch Online": "go:Prin-on",
+    "Download": "go:Prin",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Prince-And-Family"
+  },
+  {
+    "id": "modal12",
+    "title": "Jinn -The Pet (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/pWitfeaZHtnw5ErwgKhDXRNlPFa.jpg",
+    "Watch Online": "go:Jinn-on",
+    "Download": "go:Jinn",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Jinn-The-Pet"
+  },
+  {
+    "id": "modal13",
+    "title": "Thug Life (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/hREhfb8dobTlJgHn4LPbvDH5tmM.jpg",
+    "Watch Online": "go:Thug-on",
+    "Download": "go:Thug",
+    "Telegram File": "#"
+  },
+  {
+    "id": "modal14",
+    "title": "Nancy Rani (2025)",
+    "badge": "HD",
+    "image": "https://image.tmdb.org/t/p/original/eWJ0eQl7Ha88hAUyd4GV0BQ8VNH.jpg",
+    "Watch Online": "go:Nancy-on",
+    "Download": "go:Nancy",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Nancy-Rani"
+  },
+  {
+    "id": "modal15",
+    "title": "Super Zindangi (2025)",
+    "badge": "4K",
+    "image": "https://image.tmdb.org/t/p/original/zdHu2jWTbJTqCVdzFBhCAPIBwFa.jpg",
+    "Watch Online": "go:Super-on",
+    "Download": "go:Super",
+    "Telegram File": "https://t.me/Mamitha_M4U_bot?start=getfile-Super-Zindangi"
   }
-]
