@@ -27,6 +27,22 @@
     <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 
       <!-- Movie Card -->
+      <div class="movie-card" data-lang="Malayalam" onclick="openModal('modal17')">
+        <div class="relative bg-white rounded-lg shadow-md overflow-hidden cursor-pointer">
+          <span class="absolute top-2 left-2 bg-pink-600 text-white text-xs px-2 py-0.5 rounded shadow z-10">HD</span>
+          <div class="relative">
+            <img src="https://i.ibb.co/Tq0tQ0pv/52036538056944514977030.jpg" alt="Movies4U" class="w-full h-48 object-cover">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-10 h-10 bg-black bg-opacity-60 rounded-full flex items-center justify-center border-2 border-white">
+                <div class="play-icon ml-1"></div>
+              </div>
+            </div>
+          </div>
+          <p class="p-2 text-sm font-bold truncate-ellipsis">Karthavu Kriya Karmam (2024)</p>
+        </div>
+      </div>
+      
+      <!-- Movie Card -->
       <div class="movie-card" data-lang="Malayalam" onclick="openModal('modal16')">
         <div class="relative bg-white rounded-lg shadow-md overflow-hidden cursor-pointer">
           <span class="absolute top-2 left-2 bg-pink-600 text-white text-xs px-2 py-0.5 rounded shadow z-10">HD</span>
@@ -287,6 +303,18 @@
     </div>
   </main>
 
+<!-- Modal -->
+  <div id="modal17" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden" onclick="closeModal('modal17')">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-80 relative" onclick="event.stopPropagation()">
+      <button class="absolute top-2 right-3 text-gray-500 text-xl" onclick="closeModal('modal17')">&times;</button>
+      <h3 class="text-lg font-bold mb-4">Karthavu Kriya Karmam (2024) Malayalam</h3>
+      <a href="go:Kartha-on" class="block bg-pink-600 text-white py-2 px-4 rounded mb-2 text-center">Watch Online</a>
+      <a href="go:Kartha" class="block bg-green-600 text-white py-2 px-4 rounded mb-2 text-center">Download</a>
+      <a href="https://t.me/Mamitha_M4U_bot?start=getfile-Karthavu-Kriya-Karmam" class="block bg-blue-600 text-white py-2 px-4 rounded text-center">Telegram File</a>
+    </div>
+  </div>
+
+
   <!-- Modal -->
   <div id="modal16" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden" onclick="closeModal('modal16')">
     <div class="bg-white rounded-lg shadow-lg p-6 w-80 relative" onclick="event.stopPropagation()">
@@ -297,7 +325,6 @@
       <a href="https://t.me/Mamitha_M4U_bot?start=getfile-Adhinayakavadham" class="block bg-blue-600 text-white py-2 px-4 rounded text-center">Telegram File</a>
     </div>
   </div>
-
 
   <!-- Modal -->
   <div id="modal15" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden" onclick="closeModal('modal15')">
