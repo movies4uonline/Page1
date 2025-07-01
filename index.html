@@ -11,6 +11,57 @@
       margin: 0;
       font-family: sans-serif;
     }
+
+    /* Loader Spinner */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #db2777;
+      border-top: 4px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    .loader-text {
+      color: #db2777;
+      font-weight: bold;
+      font-size: 16px;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .fade-out {
+      animation: fadeOut 0.5s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -19,6 +70,7 @@
       max-width: 1000px;
       margin: 0 auto;
     }
+
     .movie-card {
       background: white;
       border-radius: 10px;
@@ -27,11 +79,13 @@
       cursor: pointer;
       position: relative;
     }
+
     .movie-card img {
       width: 100%;
       height: 210px;
       object-fit: cover;
     }
+
     .badge {
       position: absolute;
       top: 8px;
@@ -43,6 +97,7 @@
       border-radius: 4px;
       z-index: 1;
     }
+
     .play-overlay {
       position: absolute;
       inset: 0;
@@ -50,6 +105,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .play-circle {
       width: 40px;
       height: 40px;
@@ -60,6 +116,7 @@
       justify-content: center;
       border: 2px solid white;
     }
+
     .play-icon {
       width: 0;
       height: 0;
@@ -67,6 +124,7 @@
       border-bottom: 8px solid transparent;
       border-left: 12px solid white;
     }
+
     .title {
       font-size: 14px;
       font-weight: bold;
@@ -76,6 +134,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .modal {
       position: fixed;
       inset: 0;
@@ -85,9 +144,11 @@
       justify-content: center;
       z-index: 999;
     }
+
     .modal.active {
       display: flex;
     }
+
     .modal-content {
       background: white;
       border-radius: 10px;
@@ -95,6 +156,7 @@
       width: 300px;
       position: relative;
     }
+
     .modal-content button.close {
       position: absolute;
       top: 10px;
@@ -105,6 +167,7 @@
       color: #666;
       cursor: pointer;
     }
+
     .modal-content a {
       display: block;
       margin-bottom: 10px;
@@ -115,12 +178,24 @@
       color: white;
       font-weight: bold;
     }
+
     .watch { background: #db2777; }
     .download { background: #16a34a; }
     .telegram { background: #2563eb; }
   </style>
 </head>
 <body>
+
+  <!-- Loader Spinner -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">Loading...</div>
+  </div>
+
+  <!-- Movie Grid -->
+  <div id="movieGrid" class="grid" style="display:none;"></div>
+  <div id="modalsContainer"></div>
+
   <script>
     const movies = [
       {
@@ -357,14 +432,9 @@
           { lang: "", url: "go:Super" }
         ],
         telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Super-Zindagi"
-      },
+      }
     ];
-  </script>
 
-  <div class="grid" id="movieGrid"></div>
-  <div id="modalsContainer"></div>
-
-  <script>
     const grid = document.getElementById("movieGrid");
     const modalsContainer = document.getElementById("modalsContainer");
 
@@ -383,42 +453,37 @@
         <div id="modal${idx}" class="modal" onclick="closeModal${idx}()">
           <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close" onclick="closeModal${idx}()">&times;</button>
-            <h3 id="modalTitle${idx}" style="font-weight:bold; margin-bottom:16px;">${movie.popupTitle}</h3>
-
+            <h3 style="font-weight:bold; margin-bottom:16px;">${movie.popupTitle}</h3>
             ${movie.watchLinks.map(link => `
               <a href="${link.url}" class="watch">${link.lang} Watch Online</a>
             `).join('')}
-
             ${movie.downloadLinks.map(link => `
               <a href="${link.url}" class="download">${link.lang} Download</a>
             `).join('')}
-
             <a href="${movie.telegram}" class="telegram">Telegram File</a>
           </div>
         </div>
       `;
 
-      window[`openModal${idx}`] = function() {
-        document.getElementById(`modal${idx}`).classList.add('active');
-      }
+      window[`openModal${idx}`] = () => {
+        document.getElementById(`modal${idx}`).classList.add("active");
+      };
 
-      window[`closeModal${idx}`] = function() {
-        document.getElementById(`modal${idx}`).classList.remove('active');
-      }
+      window[`closeModal${idx}`] = () => {
+        document.getElementById(`modal${idx}`).classList.remove("active");
+      };
+    });
+
+    // Loader fade-out and show grid
+    window.addEventListener("load", () => {
+      const loader = document.getElementById("loader");
+      const grid = document.getElementById("movieGrid");
+      loader.classList.add("fade-out");
+      setTimeout(() => {
+        loader.style.display = "none";
+        grid.style.display = "grid";
+      }, 500);
     });
   </script>
-  <!-- Your Movie Cards Here -->
-
-  <div class="button-container">
-    <a href="go:page-2" class="next-button">Next Page →</a>
-  </div>
-
-<!-- 🔝 Top Ad -->
-<div style="text-align: center; margin: 10px 0;">
-  <script type='text/javascript' src='//debtdispleaseboss.com/29/99/aa/2999aa90e5d86f11b727ee915517276a.js'></script>
-</div>
-
-<!-- Rest of your HTML -->
-  
 </body>
 </html>
