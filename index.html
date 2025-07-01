@@ -3,454 +3,438 @@
 <head>
   <meta charset="UTF-8">
   <title>Movies4U</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      background: #fff;
+      font-family: 'Inter', sans-serif;
+      color: #000;
     }
-
-    h2 {
-      color: #5DB338;
-      padding: 8px;
-      margin: 0;
-      border-left: 4px solid #5DB338;
-    }
-
     .container {
-      padding: 20px 20px;
+      padding: 16px;
     }
-
     .movies {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 12px;
     }
-
-    .movie {
-      background: #1a1a1a;
-      border-radius: 4px;
+    .movie-card {
+      background: #fff;
+      border-radius: 8px;
       overflow: hidden;
-      border: 1px solid #333;
-      cursor: pointer;
-      outline: none;
-    }
-
-    .movie:focus {
-      outline: 3px solid #5DB338;
-      transform: scale(1.05);
-      z-index: 2;
-    }
-
-    .poster-wrapper {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       position: relative;
+      cursor: pointer;
+      transition: transform 0.2s ease;
     }
-
-    .movie img {
+    .movie-card:hover {
+      transform: scale(1.02);
+    }
+    .movie-card img {
       width: 100%;
       height: 210px;
       object-fit: cover;
       display: block;
     }
-
-    .language-badge {
+    .badge {
       position: absolute;
-      top: 8px;
-      left: 8px;
-      background: rgba(0, 0, 0, 0.75);
-      color: #fff;
+      top: 6px;
+      left: 6px;
+      background-color: #db2777;
+      color: white;
       padding: 2px 6px;
       font-size: 11px;
-      border-radius: 3px;
+      font-weight: bold;
+      border-radius: 4px;
+      z-index: 2;
     }
-
-    .play-button {
+    .play-overlay {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 38px;
-      height: 38px;
-      background: rgba(0,0,0,0.7);
-      border-radius: 50%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+    .play-circle {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(0,0,0,0.6);
       border: 2px solid #fff;
-      transform: translate(-50%, -50%);
+      border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-
-    .play-button::before {
-      content: '';
-      border-left: 14px solid white;
-      border-top: 9px solid transparent;
-      border-bottom: 9px solid transparent;
+    .play-icon {
+      width: 0;
+      height: 0;
+      border-left: 12px solid white;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
     }
-
-    .info {
-      padding: 8px;
+    .title {
       font-size: 14px;
+      font-weight: 600;
+      padding: 8px 4px;
       text-align: center;
-      background: #111;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background-color: #fff;
+      color: #000;
     }
-
+    /* Modal */
     .modal {
-      display: none;
       position: fixed;
       top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       background: rgba(0,0,0,0.8);
+      display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      z-index: 999;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
-
+    .modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
     .modal-content {
-      background: #111;
+      background: #fff;
       padding: 20px;
-      border-radius: 10px;
-      text-align: center;
+      border-radius: 12px;
+      max-width: 350px;
       width: 90%;
-      max-width: 320px;
       position: relative;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
-
-    .modal-content h3 {
-      color: #5DB338;
-      margin-bottom: 12px;
-    }
-
-    .modal-content a {
-      display: block;
-      background: #5DB338;
-      color: #000;
-      padding: 10px;
-      margin: 8px 0;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-
     .close {
-      color: #aaa;
-      font-size: 24px;
       position: absolute;
       top: 10px;
-      right: 20px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
       cursor: pointer;
     }
-    .spinner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 4px solid rgba(255,255,255,0.3);
-  border-top: 4px solid #5DB338;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-/* Navigation Button */
-    .button-container {
-      text-align: center;
-      margin: 30px 0;
-      opacity: 0;
-      animation: fadeIn 2.4s ease-in-out 0.7s forwards;
-    }
-
-    .next-button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #5DB338;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
+    .modal-content a {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
       font-weight: bold;
-      text-align: center;
       text-decoration: none;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-      transition: background 0.3s ease;
-      margin: 0 5px;
+      color: #fff;
+      transition: background 0.3s;
     }
-
-    .next-button:hover {
-      background-color: #b91c1c;
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
+    .modal-content a:hover { opacity: 0.9; }
+    .watch { background: #db2777; }
+    .download { background: #16a34a; }
+    .telegram { background: #2563eb; }
   </style>
-
-  <script>
-    function openModal(id) {
-      document.getElementById(id).style.display = "flex";
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
-    }
-
-    // Scroll focused movie into view for TV remotes
-    document.addEventListener("keydown", function (e) {
-      const focused = document.activeElement;
-      if (focused && focused.classList.contains("movie")) {
-        focused.scrollIntoView({ block: "center", behavior: "smooth" });
-      }
-    });
-    
-window.addEventListener('DOMContentLoaded', () => {
-  const posters = document.querySelectorAll('.poster-wrapper');
-  posters.forEach(wrapper => {
-    const img = wrapper.querySelector('img');
-    const spinner = wrapper.querySelector('.spinner');
-    img.onload = () => {
-      img.style.display = 'block';
-      if (spinner) spinner.remove();
-    };
-    img.onerror = () => {
-      if (spinner) spinner.remove();
-    };
-  });
-});
-  </script>
 </head>
 <body>
 
-  <h2>Latest Movies</h2>
   <div class="container">
-    <div class="movies">
-      
-      
-      
-      <!-- Movie 9 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal9')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Malayalam</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/yyVZU0gyvRbLyKYdNa23GLF5jje.jpg" alt="Movie 1">
-          <div class="play-button"></div>
-        </div>
-        <div class="info">Maharani (2025)</div>
-      </div>
-      
-      <!-- Movie 8 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal8')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Malayalam</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/adOgLdhbqOJgLZ7ufB0vGRUiIE.jpg" alt="Movie 1">
-          <div class="play-button"></div>
-        </div>
-        <div class="info">Sthanarthi Sreekuttan (2025)</div>
-      </div>
-      
-      <!-- Movie 7 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal7')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Malayalam</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/g4mcMOjcQXdDBqxsU2BrQ6uuNDL.jpg" alt="Movie 1">
-          <div class="play-button"></div>
-        </div>
-        <div class="info">Lovely (2025)</div>
-      </div>
-      
-      <!-- Movie 6 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal6')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Multi Language</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/efg6YPbDLkvu0s2pHidVAjfJSn6.jpg" alt="Movie 1">
-          <div class="play-button"></div>
-        </div>
-        <div class="info">Kerala crime Files (2025)</div>
-      </div>
-      
-     <!-- Movie 5 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal5')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Malayalam</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/bsFg2yv4zeOSbch0K3xxObrvux1.jpg" alt="Movie 1">
-          <div class="play-button"></div>
-        </div>
-        <div class="info">Prince And Family (2025)</div>
-      </div>
-      
-      <!-- Movie 4 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal4')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Tamil</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/pWitfeaZHtnw5ErwgKhDXRNlPFa.jpg" alt="Movie 1">
-          <div class="play-button"></div>
-        </div>
-        <div class="info">Jinn -The Pet (2025)</div>
-      </div>
-      
-      <!-- Movie 3 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal3')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Tamil</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/hREhfb8dobTlJgHn4LPbvDH5tmM.jpg" alt="Movie 1">
-          <div class="play-button"></div>
-        </div>
-        <div class="info">Thug Life (2025)</div>
-      </div>
+    <div id="movieGrid" class="movies"></div>
+  </div>
+  <div id="modalsContainer"></div>
 
-      <!-- Movie 2 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal2')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Malayalam</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/eWJ0eQl7Ha88hAUyd4GV0BQ8VNH.jpg" alt="Movie 2">
-          <div class="play-button"></div>
+  <script>
+    const movies = [
+      {
+        title: "Kannappa (2025)",
+        popupTitle: "Kannappa (2025) Malayalam",
+        img: "https://i.ibb.co/84bYvbvH/6-Lh-E7-Iwh-Xga-Ni33l0lt-Yah-IB91i.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Kannapa-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Kannappa" }
+        ],
+        telegram: "#"
+      },
+      {
+        title: "Thunderbolts (2025)",
+        popupTitle: "Thunderbolts (2025) English",
+        img: "https://i.ibb.co/7DXLhMK/Aqy-Yyck-Mbi-Npo-OUel9y-WYVm-LGql.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Thunder-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Thunder" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Thunderbolts"
+      },
+      {
+        title: "Karthavu Kriya Karmam (2024)",
+        popupTitle: "Karthavu Kriya Karmam (2024) - Malayalam",
+        img: "https://i.ibb.co/Tq0tQ0pv/52036538056944514977030.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Kartha-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Kartha" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Karthavu-Kriya-Karmam"
+      },
+      {
+        title: "Adhinayakavadham (2024)",
+        popupTitle: "Adhinayakavadham (2024) Malayalam",
+        img: "https://i.ibb.co/4nygkLFv/IMG-20250629-105357-532.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Adhin-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Adhin" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Adhinayakavadham"
+      },
+      {
+        title: "Azadi (2025)",
+        popupTitle: "Azadi (2025) [Malayalam +Tamil]",
+        img: "https://i.ibb.co/zhm4tyPP/A3t50-UA1rl6-Yt15e-MJPkp-Me2e-Mh.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Azadi-on" },
+          { lang: "Tamil", url: "go:Azadi2-on" }
+        ],
+        downloadLinks: [
+          { lang: "[Malayalam + Tamil]", url: "go:Azadi" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Azadi"
+      },
+      {
+        title: "The Verdict (2025)",
+        popupTitle: "The Verdict (2025) Tamil",
+        img: "https://i.ibb.co/MYtnYPv/b-Sr-Liimjvqwwi-MPJErvh-Gpp-TUAf.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Verdict-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Verdict" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-The-Verdict"
+      },
+      {
+        title: "Ronth (2025)",
+        popupTitle: "Ronth (2025) Malayalam",
+        img: "https://i.ibb.co/R4bXss8C/4-Etwrrfb-HTU4w-Ci-Li-Xqz6o-Iw2h-N.jpg",
+        badge: "Cam",
+        watchLinks: [
+          { lang: "", url: "go:Ronth-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Ronth" }
+        ],
+        telegram: "#"
+      },
+      {
+        title: "Undead (2025)",
+        popupTitle: "Undead (2025) Malayalam",
+        img: "https://i.ibb.co/SDQKnTDC/IMG-20250626-183118-823.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Undead-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Undead" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Undead"
+      },
+      {
+        title: "Pariwar (2025)",
+        popupTitle: "Pariwar (2025) Malayalam",
+        img: "https://i.ibb.co/20WfHxTC/f-Hd-CRIu-Wt9-UAn-Jq-WR8-Wvy-Vc8-Url.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Pari-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Pariwar" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Pariwar"
+      },
+      {
+        title: "Maharani (2025)",
+        popupTitle: "Maharani (2025) Malayalam",
+        img: "https://i.ibb.co/RppY7mkP/oxom8-Eb4-RRtm4139y-C751z-KMRl-C.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Maha-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Maharani" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Maharani"
+      },
+      {
+        title: "Sthanarthi Sreekuttan (2024)",
+        popupTitle: "Sthanarthi Sreekuttan (2024) Malayalam",
+        img: "https://i.ibb.co/YTQQXvRQ/ad-Og-Ldhbq-OJg-LZ7uf-B0v-GRUi-IE.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Sthana-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Sthana" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Sthanarthi-Sreekuttan"
+      },
+      {
+        title: "Evol (2025)",
+        popupTitle: "Evol (2025) Tamil",
+        img: "https://i.ibb.co/schZgs7/bu-Xcl-Ubb5mc-Zyug4-TXz-Brl-YLs-EP.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Evol-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Evol" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Evol"
+      },
+      {
+        title: "Lovely (2025)",
+        popupTitle: "Lovely (2025) Malayalam",
+        img: "https://i.ibb.co/WN8M35n0/g4mc-MOjc-QXd-DBqxs-U2-Br-Q6uu-NDL.webp",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Lovely-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Lovely" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Lovely"
+      },
+      {
+        title: "Kerala Crime Files (2025)",
+        popupTitle: "Kerala Crime Files Season02 (2025) [Tam Mal Tel Hin Kan]",
+        img: "https://i.ibb.co/Z1djBLrc/1o-P7-B17-PCd0k-Yhz-ARPtz1-Qfo-ONO.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Kera-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Kerala" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Kerala-Crime-Files"
+      },
+      {
+        title: "Prince And Family (2025)",
+        popupTitle: "Prince And Family (2025) Malayalam",
+        img: "https://i.ibb.co/zV8QT4qm/bs-Fg2yv4ze-OSbch0-K3xx-Obrvux1.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Prin-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Prin" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Prince-And-Family"
+      },
+      {
+        title: "Jinn - The Pet (2025)",
+        popupTitle: "Jinn - The Pet (2025) Tamil",
+        img: "https://i.ibb.co/3YhhJFs4/3i-XTrdp-J9jb-EH82whrq-XIo1x-MOd.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Jinn-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Jinn" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Jinn-The-Pet"
+      },
+      {
+        title: "Thug Life (2025)",
+        popupTitle: "Thug Life (2025) Tamil",
+        img: "https://i.ibb.co/Xf0T132S/nmzzfzow-Rem7-Rg-XYR3-Vs-Dxz-JNve.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Thug-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Thug" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Thug-Life"
+      },
+      {
+        title: "Nancy Rani (2025)",
+        popupTitle: "Nancy Rani (2025) Malayalam",
+        img: "https://i.ibb.co/WWhYfLXz/e-WJ0e-Ql7-Ha88h-AUyd4-GV0-BQ8-VNH.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Nancy-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Nancy" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Nancy-Rani"
+      },
+      {
+        title: "Super Zindagi (2025)",
+        popupTitle: "Super Zindagi (2025) Malayalam",
+        img: "https://i.ibb.co/Y70v4KvW/zd-Hu2j-WTb-JTq-CVdz-FBh-CAPIBw-Fa.jpg",
+        badge: "HD",
+        watchLinks: [
+          { lang: "", url: "go:Super-on" }
+        ],
+        downloadLinks: [
+          { lang: "", url: "go:Super" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Super-Zindagi"
+      }
+    ];
+
+    const grid = document.getElementById("movieGrid");
+    const modalsContainer = document.getElementById("modalsContainer");
+
+    movies.forEach((movie, i) => {
+      const idx = i + 1;
+      grid.innerHTML += `
+        <div class='movie-card' onclick="openModal${idx}()">
+          <span class='badge'>${movie.badge}</span>
+          <img src='${movie.img}' />
+          <div class='play-overlay'><div class='play-circle'><div class='play-icon'></div></div></div>
+          <div class='title'>${movie.title}</div>
         </div>
-        <div class="info">Nancy Rani (2025)</div>
-      </div>
-
-      <!-- Movie 1 -->
-      <div class="movie" tabindex="0" onclick="openModal('modal1')">
-        <div class="poster-wrapper">
-          <span class="language-badge">Malayalam</span>
-          <div class="spinner"></div>
-          <img src="https://image.tmdb.org/t/p/original/zdHu2jWTbJTqCVdzFBhCAPIBwFa.jpg" alt="Movie 3">
-          <div class="play-button"></div>
+      `;
+      modalsContainer.innerHTML += `
+        <div id="modal${idx}" class="modal" onclick="closeModal${idx}()">
+          <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close" onclick="closeModal${idx}()">&times;</button>
+            <h3 style="font-weight:bold; margin-bottom:16px;">${movie.popupTitle}</h3>
+            ${movie.watchLinks.map(link => `<a href="${link.url}" class="watch">${link.lang} Watch Online</a>`).join('')}
+            ${movie.downloadLinks.map(link => `<a href="${link.url}" class="download">${link.lang} Download</a>`).join('')}
+            <a href="${movie.telegram}" class="telegram">Telegram File</a>
+          </div>
         </div>
-        <div class="info">Super Zindangi (2025)</div>
-      </div>
-
-    </div>
-  </div>
-  
-  
-  <!-- Modal 10 -->
-  <div id="modal10" class="modal" onclick="closeModal('modal10')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal10')">×</span>
-      <h3>Final Destination: Bloodlines (2025) English</h3>
-      <a href="go:Final-on">Watch Online</a>
-      <a href="go:Final">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-  
-  <!-- Modal 9 -->
-  <div id="modal9" class="modal" onclick="closeModal('modal9')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal9')">×</span>
-      <h3>Maharani (2025) Malayalam</h3>
-      <a href="go:Maha-on">Watch Online</a>
-      <a href="go:Maharani">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-  
-  <!-- Modal 8 -->
-  <div id="modal8" class="modal" onclick="closeModal('modal8')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal8')">×</span>
-      <h3>Sthanarthi Sreekuttan (2024) Malayalam</h3>
-      <a href="go:Sthana-on">Watch Online</a>
-      <a href="go:Sthana">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-  
-  <!-- Modal 7 -->
-  <div id="modal7" class="modal" onclick="closeModal('modal7')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal7')">×</span>
-      <h3>Lovely (2025) Malayalam</h3>
-      <a href="go:Lovely-on">Watch Online</a>
-      <a href="go:Lovely">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-  
-  <!-- Modal 6 -->
-  <div id="modal6" class="modal" onclick="closeModal('modal6')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal6')">×</span>
-      <h3>Kerala Crime Files Season02 (2025) [Tam Mal Tel Hin Kan]</h3>
-      <a href="go:Kera-on">Watch Online</a>
-      <a href="go:Kerala">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-  
-  <!-- Modal 5 -->
-  <div id="modal5" class="modal" onclick="closeModal('modal5')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal5')">×</span>
-      <h3>Prince And Family (2025) Malayalam</h3>
-      <a href="go:Prin-on">Watch Online</a>
-      <a href="go:Prin">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-  
-  <!-- Modal 4 -->
-  <div id="modal4" class="modal" onclick="closeModal('modal4')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal4')">×</span>
-      <h3>Jinn -The Pet (2025) Tamil</h3>
-      <a href="go:Jinn-on">Watch Online</a>
-      <a href="go:Jinn">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-  
-  <!-- Modal 3 -->
-  <div id="modal3" class="modal" onclick="closeModal('modal3')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal3')">×</span>
-      <h3>Thug Life (2025) Tamil</h3>
-      <a href="go:Thug-on">Watch Online</a>
-      <a href="go:Thug">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-
-  <!-- Modal 2 -->
-  <div id="modal2" class="modal" onclick="closeModal('modal2')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal2')">×</span>
-      <h3>Nancy Rani (2025) Malayalam</h3>
-      <a href="go:Nancy-on">Watch Online</a>
-      <a href="go:Nancy">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-
-  <!-- Modal 1 -->
-  <div id="modal1" class="modal" onclick="closeModal('modal1')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close" onclick="closeModal('modal1')">×</span>
-      <h3>Super Zindangi (2024) Malayalam</h3>
-      <a href="go:Super-on">Watch Online</a>
-      <a href="go:Super">Download</a>
-      <a href="#">Telegram File</a>
-    </div>
-  </div>
-
-<!-- Your Movie Cards Here -->
-
-  <div class="button-container">
-    <a href="go:page-2" class="next-button">Next Page →</a>
-  </div>
+      `;
+      window[`openModal${idx}`] = () => {
+        document.getElementById(`modal${idx}`).classList.add("active");
+      };
+      window[`closeModal${idx}`] = () => {
+        document.getElementById(`modal${idx}`).classList.remove("active");
+      };
+    });
+  </script>
 
 </body>
   </html>
