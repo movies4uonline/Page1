@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="ml">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Movies4U</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .truncate-ellipsis {
-      overflow: hidden;
       white-space: nowrap;
+      overflow: hidden;
       text-overflow: ellipsis;
     }
     .movie-card {
@@ -17,11 +17,6 @@
       border-radius: 12px;
       background: white;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s ease;
-      
-    }
-    .movie-card:hover {
-      transform: scale(1.02);
     }
     .play-overlay {
       position: absolute;
@@ -51,6 +46,7 @@
   </style>
 </head>
 <body class="bg-white text-black font-sans">
+
   <header class="bg-pink-200 text-center py-2 shadow">
     <h1 class="text-lg font-bold">🎬 LATEST MOVIES</h1>
   </header>
@@ -59,6 +55,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="movieGrid"></div>
   </main>
 
+  <!-- Modal -->
   <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 max-w-sm w-full relative text-center shadow-lg">
       <button class="absolute top-2 right-3 text-2xl font-bold" onclick="closeModal()">&times;</button>
@@ -69,8 +66,14 @@
     </div>
   </div>
 
+  <!-- Pagination -->
+  <div class="flex justify-center gap-4 mt-4">
+    <button onclick="prevPage()" id="prevBtn" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50">⬅ Previous</button>
+    <button onclick="nextPage()" id="nextBtn" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50">Next ➡</button>
+  </div>
+
   <script>
-    const movies = [      
+    const movies = [
       {
         title: "Kannappa (2025)",
         popupTitle: "Kannappa (2025) Malayalam",
@@ -338,39 +341,51 @@
         ],
         telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Super-Zindagi"
       }
+      // 👉 Add more movies here...
     ];
 
+    const itemsPerPage = 10;
+    let currentPage = 1;
     const grid = document.getElementById("movieGrid");
 
-    movies.forEach((movie, i) => {
-      const card = document.createElement("div");
-      card.className = "movie-card cursor-pointer";
-      card.onclick = () => openModal(movie);
+    function renderPage(page) {
+      grid.innerHTML = "";
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageItems = movies.slice(start, end);
 
-      card.innerHTML = `
-        <span class="absolute top-2 left-2 bg-pink-600 text-white text-xs font-bold px-2 py-0.5 rounded">${movie.badge}</span>
-        <img src="${movie.img}" class="w-full h-[280px] object-cover" alt="${movie.title}">
-        <div class="play-overlay">
-          <div class="play-circle"><div class="play-icon"></div></div>
-        </div>
-        <div class="p-2">
-          <p class="text-sm font-semibold truncate-ellipsis">${movie.title}</p>
-          <div class="flex justify-between items-center mt-1 text-xs text-gray-600">
-            <span>${movie.quality}</span>
-            <span class="italic bg-pink-500 text-white px-1 rounded">${movie.badge}</span>
+      pageItems.forEach((movie) => {
+        const card = document.createElement("div");
+        card.className = "movie-card cursor-pointer";
+        card.onclick = () => openModal(movie);
+
+        card.innerHTML = `
+          <span class="absolute top-2 left-2 bg-pink-600 text-white text-xs font-bold px-2 py-0.5 rounded">${movie.badge}</span>
+          <img src="${movie.img}" class="w-full h-[260px] object-cover" alt="${movie.title}">
+          <div class="play-overlay">
+            <div class="play-circle"><div class="play-icon"></div></div>
           </div>
-        </div>
-      `;
+          <div class="p-2">
+            <p class="text-sm font-semibold truncate-ellipsis">${movie.title}</p>
+            <div class="flex justify-between items-center mt-1 text-xs text-gray-600">
+              <span>${movie.quality}</span>
+              <span class="italic bg-pink-500 text-white px-1 rounded">${movie.badge}</span>
+            </div>
+          </div>`;
+        
         grid.appendChild(card);
-    });
+      });
+
+      document.getElementById("prevBtn").disabled = currentPage === 1;
+      document.getElementById("nextBtn").disabled = currentPage * itemsPerPage >= movies.length;
+    }
 
     function openModal(movie) {
       document.getElementById("modalTitle").innerText = movie.popupTitle || movie.title;
 
-      // Watch buttons
       const watchDiv = document.getElementById("watchBtn");
       watchDiv.innerHTML = "";
-      if (movie.watchLinks && movie.watchLinks.length > 0) {
+      if (movie.watchLinks) {
         movie.watchLinks.forEach(link => {
           watchDiv.innerHTML += `
             <a href="${link.url}" target="_blank"
@@ -380,10 +395,9 @@
         });
       }
 
-      // Download buttons
       const downloadDiv = document.getElementById("downloadBtn");
       downloadDiv.innerHTML = "";
-      if (movie.downloadLinks && movie.downloadLinks.length > 0) {
+      if (movie.downloadLinks) {
         movie.downloadLinks.forEach(link => {
           downloadDiv.innerHTML += `
             <a href="${link.url}" target="_blank"
@@ -394,7 +408,6 @@
       }
 
       document.getElementById("telegramBtn").href = movie.telegram || "#";
-      
       document.getElementById("modal").classList.remove("hidden");
       document.getElementById("modal").classList.add("flex");
     }
@@ -403,9 +416,27 @@
       document.getElementById("modal").classList.add("hidden");
       document.getElementById("modal").classList.remove("flex");
     }
-  </script>
 
-  <script type='text/javascript' src='//debtdispleaseboss.com/29/99/aa/2999aa90e5d86f11b727ee915517276a.js'></script>
+    function nextPage() {
+      if (currentPage * itemsPerPage < movies.length) {
+        currentPage++;
+        renderPage(currentPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        renderPage(currentPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    renderPage(currentPage); // Load first page on startup
+  </script>
   
+  <script type='text/javascript' src='//debtdispleaseboss.com/29/99/aa/2999aa90e5d86f11b727ee915517276a.js'></script>
+
 </body>
-  </html>
+</html>
