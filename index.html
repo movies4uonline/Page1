@@ -2,70 +2,40 @@
 <html lang="ml">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Movies4U</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      margin: 0;
-      background: #fff;
-      font-family: 'Inter', sans-serif;
-      color: #000;
-    }
-    .container {
-      padding: 16px;
-    }
-    .movies {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
+    .truncate-ellipsis {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .movie-card {
-      background: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       position: relative;
-      cursor: pointer;
+      overflow: hidden;
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       transition: transform 0.2s ease;
+      
     }
     .movie-card:hover {
       transform: scale(1.02);
     }
-    .movie-card img {
-      width: 100%;
-      height: 210px;
-      object-fit: cover;
-      display: block;
-    }
-    .badge {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      background-color: #db2777;
-      color: white;
-      padding: 2px 6px;
-      font-size: 11px;
-      font-weight: bold;
-      border-radius: 4px;
-      z-index: 2;
-    }
     .play-overlay {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       pointer-events: none;
     }
     .play-circle {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       background-color: rgba(0,0,0,0.6);
-      border: 2px solid #fff;
+      border: 2px solid white;
       border-radius: 50%;
       display: flex;
       justify-content: center;
@@ -78,86 +48,52 @@
       border-top: 8px solid transparent;
       border-bottom: 8px solid transparent;
     }
-    .title {
-      font-size: 14px;
-      font-weight: 600;
-      padding: 8px 4px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      background-color: #fff;
-      color: #000;
-    }
-    /* Modal */
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .modal.active {
-      visibility: visible;
-      opacity: 1;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 350px;
-      width: 90%;
-      position: relative;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      background: none;
-      border: none;
-      font-size: 24px;
-      font-weight: bold;
-      color: #000;
-      cursor: pointer;
-    }
-    .modal-content a {
-      display: block;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 6px;
-      font-weight: bold;
-      text-decoration: none;
-      color: #fff;
-      transition: background 0.3s;
-    }
-    .modal-content a:hover { opacity: 0.9; }
-    .watch { background: #db2777; }
-    .download { background: #16a34a; }
-    .telegram { background: #2563eb; }
   </style>
 </head>
-<body>
+<body class="bg-white text-black font-sans">
+  <header class="bg-pink-200 text-center py-2 shadow">
+    <h1 class="text-lg font-bold">🎬 LATEST MOVIES</h1>
+  </header>
 
-  <div class="container">
-    <div id="movieGrid" class="movies"></div>
+  <main class="p-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="movieGrid"></div>
+  </main>
+
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm w-full relative text-center shadow-lg">
+      <button class="absolute top-2 right-3 text-2xl font-bold" onclick="closeModal()">&times;</button>
+      <h2 id="modalTitle" class="text-lg font-semibold mb-4">Movie Title</h2>
+      <div id="watchBtn"></div>
+      <div id="downloadBtn"></div>
+      <a id="telegramBtn" href="#" target="_blank" class="block bg-blue-600 text-white py-2 rounded font-bold">Telegram File</a>
+    </div>
   </div>
-  <div id="modalsContainer"></div>
 
   <script>
-    const movies = [
+    const movies = [      
+      {
+        title: "Kannappa (2025)",
+        popupTitle: "Kannappa (2025) Malayalam",
+        img: "https://image.tmdb.org/t/p/w500/6LhE7IwhXgaNi33l0ltYahIB91i.jpg",
+        badge: "Cam",
+        quality: "PreDVD",
+        watchLinks: [
+          { lang: "Malayalam", url: "https://watch-link1.com" },
+          { lang: "Malayalam", url: "https://watch-link1.com" },
+          { lang: "Hindi", url: "https://watch-link2.com" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "https://download-link1.com" },
+          { lang: "Hindi", url: "https://download-link2.com" }
+        ],
+        telegram: "#"
+      },
       {
         title: "Kannappa (2025)",
         popupTitle: "Kannappa (2025) Malayalam",
         img: "https://image.tmdb.org/t/p/w500/6LhE7IwhXgaNi33l0ltYahIB91i.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Kannapa-on" }
         ],
@@ -171,6 +107,7 @@
         popupTitle: "Thunderbolts (2025) English",
         img: "https://i.ibb.co/7DXLhMK/Aqy-Yyck-Mbi-Npo-OUel9y-WYVm-LGql.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Thunder-on" }
         ],
@@ -184,6 +121,7 @@
         popupTitle: "Karthavu Kriya Karmam (2024) - Malayalam",
         img: "https://i.ibb.co/Tq0tQ0pv/52036538056944514977030.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Kartha-on" }
         ],
@@ -197,6 +135,7 @@
         popupTitle: "Adhinayakavadham (2024) Malayalam",
         img: "https://i.ibb.co/4nygkLFv/IMG-20250629-105357-532.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Adhin-on" }
         ],
@@ -210,12 +149,13 @@
         popupTitle: "Azadi (2025) [Malayalam +Tamil]",
         img: "https://image.tmdb.org/t/p/original/A3t50UA1rl6Yt15eMJPkpMe2eMh.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "Malayalam", url: "go:Azadi-on" },
           { lang: "Tamil", url: "go:Azadi2-on" }
         ],
         downloadLinks: [
-          { lang: "[Malayalam + Tamil]", url: "go:Azadi" }
+          { lang: "Malayalam + Tamil", url: "go:Azadi" }
         ],
         telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Azadi"
       },
@@ -224,6 +164,7 @@
         popupTitle: "The Verdict (2025) Tamil",
         img: "https://image.tmdb.org/t/p/original/zDf6wYW85LUQiHFMQJe5wGJuc93.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Verdict-on" }
         ],
@@ -237,6 +178,7 @@
         popupTitle: "Ronth (2025) Malayalam",
         img: "https://image.tmdb.org/t/p/original/4EtwrrfbHTU4wCiLiXqz6oIw2hN.jpg",
         badge: "Cam",
+        quality: "PreDVD",
         watchLinks: [
           { lang: "", url: "go:Ronth-on" }
         ],
@@ -250,6 +192,7 @@
         popupTitle: "Undead (2025) Malayalam",
         img: "https://i.ibb.co/SDQKnTDC/IMG-20250626-183118-823.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Undead-on" }
         ],
@@ -263,6 +206,7 @@
         popupTitle: "Pariwar (2025) Malayalam",
         img: "https://image.tmdb.org/t/p/original/fHdCRIuWt9UAnJqWR8WvyVc8Url.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Pari-on" }
         ],
@@ -276,6 +220,7 @@
         popupTitle: "Maharani (2025) Malayalam",
         img: "https://image.tmdb.org/t/p/original/oxom8Eb4RRtm4139yC751zKMRlC.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Maha-on" }
         ],
@@ -289,6 +234,7 @@
         popupTitle: "Sthanarthi Sreekuttan (2024) Malayalam",
         img: "https://image.tmdb.org/t/p/original/adOgLdhbqOJgLZ7ufB0vGRUiIE.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Sthana-on" }
         ],
@@ -302,6 +248,7 @@
         popupTitle: "Evol (2025) Tamil",
         img: "https://image.tmdb.org/t/p/original/buXclUbb5mcZyug4TXzBrlYLsEP.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Evol-on" }
         ],
@@ -315,6 +262,7 @@
         popupTitle: "Lovely (2025) Malayalam",
         img: "https://image.tmdb.org/t/p/original/g4mcMOjcQXdDBqxsU2BrQ6uuNDL.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Lovely-on" }
         ],
@@ -328,6 +276,7 @@
         popupTitle: "Kerala Crime Files Season02 (2025) [Tam Mal Tel Hin Kan]",
         img: "https://image.tmdb.org/t/p/original/efg6YPbDLkvu0s2pHidVAjfJSn6.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Kera-on" }
         ],
@@ -341,6 +290,7 @@
         popupTitle: "Prince And Family (2025) Malayalam",
         img: "https://image.tmdb.org/t/p/original/bsFg2yv4zeOSbch0K3xxObrvux1.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Prin-on" }
         ],
@@ -354,6 +304,7 @@
         popupTitle: "Jinn - The Pet (2025) Tamil",
         img: "https://image.tmdb.org/t/p/original/3iXTrdpJ9jbEH82whrqXIo1xMOd.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Jinn-on" }
         ],
@@ -367,6 +318,7 @@
         popupTitle: "Thug Life (2025) Tamil",
         img: "https://image.tmdb.org/t/p/original/nmzzfzowRem7RgXYR3VsDxzJNve.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Thug-on" }
         ],
@@ -380,6 +332,7 @@
         popupTitle: "Nancy Rani (2025) Malayalam",
         img: "https://image.tmdb.org/t/p/original/eWJ0eQl7Ha88hAUyd4GV0BQ8VNH.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Nancy-on" }
         ],
@@ -393,6 +346,7 @@
         popupTitle: "Super Zindagi (2025) Malayalam",
         img: "https://image.tmdb.org/t/p/original/zdHu2jWTbJTqCVdzFBhCAPIBwFa.jpg",
         badge: "HD",
+        quality: "HDRip",
         watchLinks: [
           { lang: "", url: "go:Super-on" }
         ],
@@ -404,39 +358,68 @@
     ];
 
     const grid = document.getElementById("movieGrid");
-    const modalsContainer = document.getElementById("modalsContainer");
 
     movies.forEach((movie, i) => {
-      const idx = i + 1;
-      grid.innerHTML += `
-        <div class='movie-card' onclick="openModal${idx}()">
-          <span class='badge'>${movie.badge}</span>
-          <img src='${movie.img}' />
-          <div class='play-overlay'><div class='play-circle'><div class='play-icon'></div></div></div>
-          <div class='title'>${movie.title}</div>
+      const card = document.createElement("div");
+      card.className = "movie-card cursor-pointer";
+      card.onclick = () => openModal(movie);
+
+      card.innerHTML = `
+        <span class="absolute top-2 left-2 bg-pink-600 text-white text-xs font-bold px-2 py-0.5 rounded">${movie.badge}</span>
+        <img src="${movie.img}" class="w-full h-[280px] object-cover" alt="${movie.title}">
+        <div class="play-overlay">
+          <div class="play-circle"><div class="play-icon"></div></div>
         </div>
-      `;
-      modalsContainer.innerHTML += `
-        <div id="modal${idx}" class="modal" onclick="closeModal${idx}()">
-          <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="close" onclick="closeModal${idx}()">&times;</button>
-            <h3 style="font-weight:bold; margin-bottom:16px;">${movie.popupTitle}</h3>
-            ${movie.watchLinks.map(link => `<a href="${link.url}" class="watch">${link.lang} Watch Online</a>`).join('')}
-            ${movie.downloadLinks.map(link => `<a href="${link.url}" class="download">${link.lang} Download</a>`).join('')}
-            <a href="${movie.telegram}" class="telegram">Telegram File</a>
+        <div class="p-2">
+          <p class="text-sm font-semibold truncate-ellipsis">${movie.title}</p>
+          <div class="flex justify-between items-center mt-1 text-xs text-gray-600">
+            <span>${movie.quality}</span>
+            <span class="italic bg-pink-500 text-white px-1 rounded">${movie.badge}</span>
           </div>
         </div>
       `;
-      window[`openModal${idx}`] = () => {
-        document.getElementById(`modal${idx}`).classList.add("active");
-      };
-      window[`closeModal${idx}`] = () => {
-        document.getElementById(`modal${idx}`).classList.remove("active");
-      };
+        grid.appendChild(card);
     });
+
+    function openModal(movie) {
+      document.getElementById("modalTitle").innerText = movie.popupTitle || movie.title;
+
+      // Watch buttons
+      const watchDiv = document.getElementById("watchBtn");
+      watchDiv.innerHTML = "";
+      if (movie.watchLinks && movie.watchLinks.length > 0) {
+        movie.watchLinks.forEach(link => {
+          watchDiv.innerHTML += `
+            <a href="${link.url}" target="_blank"
+              class="block bg-pink-600 text-white py-2 rounded mb-2 font-bold">
+              Watch Online (${link.lang})
+            </a>`;
+        });
+      }
+
+      // Download buttons
+      const downloadDiv = document.getElementById("downloadBtn");
+      downloadDiv.innerHTML = "";
+      if (movie.downloadLinks && movie.downloadLinks.length > 0) {
+        movie.downloadLinks.forEach(link => {
+          downloadDiv.innerHTML += `
+            <a href="${link.url}" target="_blank"
+              class="block bg-green-600 text-white py-2 rounded mb-2 font-bold">
+              Download (${link.lang})
+            </a>`;
+        });
+      }
+
+      document.getElementById("telegramBtn").href = movie.telegram || "#";
+      
+      document.getElementById("modal").classList.remove("hidden");
+      document.getElementById("modal").classList.add("flex");
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.add("hidden");
+      document.getElementById("modal").classList.remove("flex");
+    }
   </script>
-
-  <script type='text/javascript' src='//debtdispleaseboss.com/29/99/aa/2999aa90e5d86f11b727ee915517276a.js'></script>
-
 </body>
-</html>
+  </html>
