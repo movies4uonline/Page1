@@ -51,7 +51,7 @@
     <h1 class="text-lg font-bold">🎬 LATEST MOVIES</h1>
   </header>
 
-<!-- Language Filter Buttons -->
+  <!-- Language Filter Buttons -->
 <div class="flex flex-wrap justify-center gap-2 p-4">
   <button onclick="filterLanguage('all')" class="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded">All</button>
   <button onclick="filterLanguage('Malayalam')" class="bg-green-300 hover:bg-green-400 px-3 py-1 rounded">Malayalam</button>
@@ -61,9 +61,10 @@
   <button onclick="filterLanguage('Kannada')" class="bg-purple-300 hover:bg-purple-400 px-3 py-1 rounded">Kannada</button>
   <button onclick="filterLanguage('English')" class="bg-blue-300 hover:bg-blue-400 px-3 py-1 rounded">English</button>
 </div>
- 
+
+  <!-- Movie Grid -->
   <main class="p-4">
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="movieGrid"></div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="movieGrid"></div>
   </main>
 
   <!-- Modal -->
@@ -83,14 +84,13 @@
     <button onclick="nextPage()" id="nextBtn" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50">Next ➡</button>
   </div>
 
-   <!-- Footer -->
   <footer class="text-center text-sm text-gray-500 py-4">
     © 2025 Movies4U. All rights reserved.
   </footer>
-  
+
   <script>
     const movies = [
-        {
+      {
         title: "Kuttante Shinigami (2024)",
         popupTitle: "Kuttante Shinigami (2024) Malayalam",
         img: "https://image.tmdb.org/t/p/original/fYqH879SqhpjVF31SArtoXHiuhG.jpg",
@@ -117,7 +117,7 @@
         downloadLinks: [
           { lang: "Tamil", url: "go:Thug" },
           { lang: "Telugu", url: "go:Thug2" },
-          { lang: "Hin Mal Kan", url: "go:Thug3" }
+          { lang: "Hindi + Malayalam + Kannada", url: "go:Thug3" }
         ],
         telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Thug-Life"
       },
@@ -483,6 +483,7 @@
       // 👉 Add more movies here...
     ];
 
+    let currentLanguage = "all";
     const itemsPerPage = 10;
     let currentPage = 1;
     const grid = document.getElementById("movieGrid");
@@ -492,18 +493,26 @@
       currentPage = 1;
       renderPage(currentPage);
     }
-    
+
     function renderPage(page) {
       grid.innerHTML = "";
+
+      const filtered = currentLanguage === "all"
+        ? movies
+        : movies.filter(m =>
+            (m.watchLinks || []).some(link =>
+              (link.lang || "").toLowerCase().includes(currentLanguage.toLowerCase())
+            )
+          );
+
       const start = (page - 1) * itemsPerPage;
       const end = start + itemsPerPage;
-      const pageItems = movies.slice(start, end);
+      const pageItems = filtered.slice(start, end);
 
       pageItems.forEach((movie) => {
         const card = document.createElement("div");
         card.className = "movie-card cursor-pointer";
         card.onclick = () => openModal(movie);
-
         card.innerHTML = `
           <span class="absolute top-2 left-2 bg-pink-600 text-white text-xs font-bold px-2 py-0.5 rounded">${movie.badge}</span>
           <img src="${movie.img}" class="w-full h-[260px] object-cover" alt="${movie.title}">
@@ -517,12 +526,11 @@
               <span class="italic bg-pink-500 text-white px-1 rounded">${movie.badge}</span>
             </div>
           </div>`;
-        
         grid.appendChild(card);
       });
 
       document.getElementById("prevBtn").disabled = currentPage === 1;
-      document.getElementById("nextBtn").disabled = currentPage * itemsPerPage >= movies.length;
+      document.getElementById("nextBtn").disabled = currentPage * itemsPerPage >= filtered.length;
     }
 
     function openModal(movie) {
@@ -563,11 +571,9 @@
     }
 
     function nextPage() {
-      if (currentPage * itemsPerPage < movies.length) {
-        currentPage++;
-        renderPage(currentPage);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      currentPage++;
+      renderPage(currentPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function prevPage() {
@@ -578,11 +584,12 @@
       }
     }
 
-    renderPage(currentPage); // Load first page on startup
+    renderPage(currentPage);
   </script>
-
+  
   <!-- ✅ Adsterra Social Bar Script -->
  <script type='text/javascript' src='//debtdispleaseboss.com/29/99/aa/2999aa90e5d86f11b727ee915517276a.js'></script>
-
+  
+  
 </body>
-  </html>
+</html>
