@@ -51,6 +51,17 @@
     <h1 class="text-lg font-bold">🎬 LATEST MOVIES</h1>
   </header>
 
+<!-- Language Filter Buttons -->
+<div class="flex flex-wrap justify-center gap-2 p-4">
+  <button onclick="filterLanguage('all')" class="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded">All</button>
+  <button onclick="filterLanguage('Malayalam')" class="bg-green-300 hover:bg-green-400 px-3 py-1 rounded">Malayalam</button>
+  <button onclick="filterLanguage('Tamil')" class="bg-pink-300 hover:bg-pink-400 px-3 py-1 rounded">Tamil</button>
+  <button onclick="filterLanguage('Telugu')" class="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded">Telugu</button>
+  <button onclick="filterLanguage('Hindi')" class="bg-yellow-300 hover:bg-yellow-400 px-3 py-1 rounded">Hindi</button>
+  <button onclick="filterLanguage('Kannada')" class="bg-purple-300 hover:bg-purple-400 px-3 py-1 rounded">Kannada</button>
+  <button onclick="filterLanguage('English')" class="bg-blue-300 hover:bg-blue-400 px-3 py-1 rounded">English</button>
+</div>
+ 
   <main class="p-4">
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="movieGrid"></div>
   </main>
@@ -476,6 +487,12 @@
     let currentPage = 1;
     const grid = document.getElementById("movieGrid");
 
+    function filterLanguage(lang) {
+      currentLanguage = lang;
+      currentPage = 1;
+      renderPage(currentPage);
+    }
+    
     function renderPage(page) {
       grid.innerHTML = "";
       const start = (page - 1) * itemsPerPage;
