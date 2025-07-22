@@ -4,19 +4,62 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Movies4U</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .truncate-ellipsis {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #fff;
+      color: #000;
+    }
+    header {
+      background: #fbcfe8;
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+    }
+    .filters button {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      padding: 10px;
     }
     .movie-card {
       position: relative;
-      overflow: hidden;
+      background: #fff;
       border-radius: 12px;
-      background: white;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .movie-card img {
+      width: 100%;
+      height: 225px;
+      object-fit: cover;
+      display: block;
+    }
+    .badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #db2777;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
     }
     .play-overlay {
       position: absolute;
@@ -28,7 +71,7 @@
       pointer-events: none;
     }
     .play-circle {
-      width: 40px; height: 40px;
+      width: 36px; height: 36px;
       background-color: rgba(0,0,0,0.6);
       border: 2px solid white;
       border-radius: 50%;
@@ -39,61 +82,394 @@
     .play-icon {
       width: 0;
       height: 0;
-      border-left: 12px solid white;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
+      border-left: 10px solid white;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+    }
+    .movie-info {
+      padding: 8px;
+    }
+    .movie-title {
+      font-size: 14px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .quality {
+      font-size: 11px;
+      color: #555;
+      margin-top: 4px;
+    }
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .modal-content {
+      background: white;
+      padding: 16px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 320px;
+      text-align: center;
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn {
+      display: block;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
+    .btn-watch { background: #db2777; }
+    .btn-download { background: #059669; }
+    .btn-telegram { background: #2563eb; }
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      padding: 16px;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .pagination button {
+      padding: 8px 16px;
+      background: #e5e7eb;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+     .donate-btn {
+      display: inline-block;
+      margin-top: 15px;
+      background-color: #00b894;
+      color: #fff;
+      padding: 12px 25px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
-<body class="bg-white text-black font-sans">
+<body>
+ <header>🎬 LATEST MOVIES</header>
 
-  <header class="bg-pink-200 text-center py-2 shadow">
-    <h1 class="text-lg font-bold">🎬 LATEST MOVIES</h1>
-  </header>
+  <div class="filters">
+    <button onclick="filterLanguage('all')">All</button>
+    <button onclick="filterLanguage('Malayalam')" style="background:#86efac">Malayalam</button>
+    <button onclick="filterLanguage('Tamil')" style="background:#f9a8d4">Tamil</button>
+    <button onclick="filterLanguage('Telugu')" style="background:#fdba74">Telugu</button>
+    <button onclick="filterLanguage('Hindi')" style="background:#fde68a">Hindi</button>
+    <button onclick="filterLanguage('Kannada')" style="background:#ddd6fe">Kannada</button>
+    <button onclick="filterLanguage('English')" style="background:#bfdbfe">English</button>
+  </div>
 
-  <!-- Language Filter Buttons -->
-<div class="flex flex-wrap justify-center gap-2 p-4">
-  <button onclick="filterLanguage('all')" class="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded">All</button>
-  <button onclick="filterLanguage('Malayalam')" class="bg-green-300 hover:bg-green-400 px-3 py-1 rounded">Malayalam</button>
-  <button onclick="filterLanguage('Tamil')" class="bg-pink-300 hover:bg-pink-400 px-3 py-1 rounded">Tamil</button>
-  <button onclick="filterLanguage('Telugu')" class="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded">Telugu</button>
-  <button onclick="filterLanguage('Hindi')" class="bg-yellow-300 hover:bg-yellow-400 px-3 py-1 rounded">Hindi</button>
-  <button onclick="filterLanguage('Kannada')" class="bg-purple-300 hover:bg-purple-400 px-3 py-1 rounded">Kannada</button>
-  <button onclick="filterLanguage('English')" class="bg-blue-300 hover:bg-blue-400 px-3 py-1 rounded">English</button>
-</div>
+  <div class="grid" id="movieGrid"></div>
 
-  <!-- Movie Grid -->
-  <main class="p-4">
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="movieGrid"></div>
-  </main>
+  <div class="pagination">
+    <button onclick="prevPage()" id="prevBtn">⬅ Previous</button>
+    <button onclick="nextPage()" id="nextBtn">Next ➡</button>
+  </div>
 
-  <!-- Modal -->
-  <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-6 max-w-sm w-full relative text-center shadow-lg">
-      <button class="absolute top-2 right-3 text-2xl font-bold" onclick="closeModal()">&times;</button>
-      <h2 id="modalTitle" class="text-lg font-semibold mb-4">Movie Title</h2>
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <h2 id="modalTitle"></h2>
       <div id="watchBtn"></div>
       <div id="downloadBtn"></div>
-      <a id="telegramBtn" href="#" target="_blank" class="block bg-blue-600 text-white py-2 rounded font-bold">Telegram File</a>
-      <div class="mt-4">
-        <p class="text-sm">🙏 Support Us</p>
-        <a href="upi://pay?pa=pg717293@oksbi&pn=Movies4U&cu=INR" target="_blank" class="inline-block bg-yellow-500 text-black font-bold px-4 py-2 mt-2 rounded animate-bounce">Donate via UPI</a>
+      <a id="telegramBtn" href="#" target="_blank" class="btn btn-telegram">Telegram File</a>
+      <div style="margin-top:10px">
+        <p style="font-size:12px">🙏 Support Us</p>
+        <a class="donate-btn"href="upi://pay?pa=pg717293@oksbi&pn=Movies4U&cu=INR" target="_blank">Donate via UPI</a>
       </div>
     </div>
   </div>
 
-  <!-- Pagination -->
-  <div class="flex justify-center gap-4 mt-4">
-    <button onclick="prevPage()" id="prevBtn" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50">⬅ Previous</button>
-    <button onclick="nextPage()" id="nextBtn" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50">Next ➡</button>
-  </div>
-
-  <footer class="text-center text-sm text-gray-500 py-4">
-    © 2025 Movies4U. All rights reserved.
-  </footer>
+  <footer>© 2025 Movies4U. All rights reserved.</footer>
 
   <script>
     const movies = [
+       {
+        title: "Ronth (2025)",
+        popupTitle: "Ronth (2025) Malayalam",
+        img: "https://image.tmdb.org/t/p/original/4EtwrrfbHTU4wCiLiXqz6oIw2hN.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Ronth-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:Ronth" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Ronth"
+      },
+       {
+        title: "United Kingdom of Kerala (2025)",
+        popupTitle: "United Kingdom of Kerala (2025) Malayalam",
+        img: "https://image.tmdb.org/t/p/original/6M8yucZiC3XBCtPkonuggnydhnm.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Unite-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:Unite" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-United-Kingdom-of-Kerala"
+      },
+       {
+        title: "Romeo S3 (2025)",
+        popupTitle: "Romeo S3 (2025) Hindi",
+        img: "https://image.tmdb.org/t/p/original/6r8Yeld5rtQLD7cKvXcxTgJm58c.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Hindi", url: "go:Romeo-on" }
+        ],
+        downloadLinks: [
+          { lang: "Hindi", url: "go:Romeo" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Romeo-S3"
+      },
+       {
+        title: "Kuberaa (2025)",
+        popupTitle: "Kuberaa (2025) [Tam Tel Hin Mal Kan]",
+        img: "https://image.tmdb.org/t/p/original/azu8wfii8R9veSeyvUnYBCWVEg7.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Tamil", url: "go:Kuber1-on" },
+          { lang: "Malayalam", url: "go:Kuber2-on" }
+        ],
+        downloadLinks: [
+          { lang: "Tamil", url: "go:Kuber1" },
+          { lang: "Malayalam", url: "go:Kuber2" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Kuberaa"
+      },
+       {
+        title: "Asthra (2023)",
+        popupTitle: "Asthra (2023) Malayalam",
+        img: "https://i.ibb.co/5Xzf1McC/MV5-BZDJm-ODVi-Yjct-NWJh-MC00-ZWMz-LWFm-NWUt-Zm-I2-MDFi-Y2-Vi-MDc4-Xk-Ey-Xk-Fqc-Gc-V1-FMjpg-UY12000.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Asthr-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:Asthra" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Asthra"
+      },
+       {
+        title: "M3GAN 2.0 (2025)",
+        popupTitle: "M3GAN 2.0 (2025) English",
+        img: "https://image.tmdb.org/t/p/original/oekamLQrwlJjRNmfaBE4llIvkir.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "English", url: "go:M3gan-on" }
+        ],
+        downloadLinks: [
+          { lang: "English", url: "go:M3gan" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-M3gan-2.0"
+      },
+      {
+        title: "How To Train Your Dragon (2025)",
+        popupTitle: "How To Train Your Dragon (2025) [Eng Hin]",
+        img: "https://image.tmdb.org/t/p/original/q5pXRYTycaeW6dEgsCrd4mYPmxM.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "English+Hindi", url: "go:How-on" }
+        ],
+        downloadLinks: [
+          { lang: "English+Hindi", url: "go:How" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-How-To-Train-Your-Dragon"
+      },
+      {
+        title: "Kundannoorile Kulsitha Lahala (2024)",
+        popupTitle: "Kundannoorile Kulsitha Lahala (2024) Malayalam",
+        img: "https://image.tmdb.org/t/p/original/sYzVVwaAdFhvMRmQhQaX5VTglgE.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Kund-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:Kund" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Kundannoorile-Kulsitha-Lahala"
+      },
+      {
+        title: "916 Kunjoottan (2025)",
+        popupTitle: "916 Kunjoottan (2025) Malayalam",
+        img: "https://image.tmdb.org/t/p/original/xMOXN6qe5isujZT2RVnlBLoA2lI.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:916-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:916" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-916-Kunjoottan"
+      },
+      {
+        title: "Detective Ujjwalan (2025)",
+        popupTitle: "Detective Ujjwalan (2025) Malayalam",
+        img: "https://image.tmdb.org/t/p/original/rVCNbMW2bmbPE2XaUMUsnA9YgAh.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Detect-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:Detect" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Detective-Ujjwalan"
+      },
+      {
+        title: "Mr and Mrs Bachelor (2025)",
+        popupTitle: "Mr and Mrs Bachelor (2025) Malayalam",
+        img: "https://image.tmdb.org/t/p/original/nsxvVxtI1SjeTu5GgcimhuBNhMc.jpg",
+        badge: "4K",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Mrmrs-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:Mrmrs" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Mr-and-Mrs-Bachelor"
+      },
+      {
+        title: "Narivetta (2025)",
+        popupTitle: "Narivetta (2025) [Malayalam Tamil Telugu Hindi Kannada]",
+        img: "https://image.tmdb.org/t/p/original/hTxAVZGYo76AxG1kbNBQmVQpAl4.jpg",
+        badge: "4K",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Nari-on" },
+          { lang: "Tamil", url: "go:Nari2-on" },
+          { lang: "Telugu+Hindi+Kannada", url: "" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:Nari" },
+          { lang: "Tamil", url: "go:Nari2" },
+          { lang: "Telugu+Hindi+Kannada", url: "go:Nari3" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Narivetta"
+      },
+      {
+        title: "Vettu (2025)",
+        popupTitle: "Vettu (2025) Tamil",
+        img: "https://i.ibb.co/60xnytfb/MV5-BNzhi-NGYx-Yz-It-ZTI1-ZC00-Njhm-LTlj-Nm-Ut-MWJm-MTYx-Mzll-Nz-Iw-Xk-Ey-Xk-Fqc-Gc-V1.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Tamil", url: "go:Vettu-on" }
+        ],
+        downloadLinks: [
+          { lang: "Tamil", url: "go:Vettu" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Vettu"
+      },
+      {
+        title: "Karate Kid : Legends (2025)",
+        popupTitle: "Karate Kid : Legends (2025) [Tamil Telugu Hindi English]",
+        img: "https://image.tmdb.org/t/p/original/hVcnLUjmJumhrWpRVs8B5ow1z5W.jpg",
+        badge: "4K",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Tamil+Telugu+Hindi+English", url: "go:Karate-on" }
+        ],
+        downloadLinks: [
+          { lang: "Tamil+Telugu+Hindi+English", url: "go:Karate" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Karate-Kid-Legends"
+      },
+      {
+        title: "Ziam (2025)",
+        popupTitle: "Ziam (2025) [Tamil Hindi English]",
+        img: "https://image.tmdb.org/t/p/original/pc2l6kgGJaCa5LKoE9VkL7lqy5n.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Tamil+Hindi+English", url: "go:Ziam-on" }
+        ],
+        downloadLinks: [
+          { lang: "Tamil+Hindi+English", url: "go:Ziam" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Ziam"
+      },
+      {
+        title: "Jangar (2025)",
+        popupTitle: "Jangar (2025) Malayalam",
+        img: "https://image.tmdb.org/t/p/original/tQZqXF2PONpC1N7lAvXRgJCOXql.jpg",
+        badge: "Cam",
+        quality: "PreDVD",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Jangar-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "https://gofile.io/d/rUX5QE" }
+        ],
+        telegram: "#"
+      },
+      {
+        title: "Moonwalk (2025)",
+        popupTitle: "Monnwalk (2025) [Tam Tel Hin Mal Kan]",
+        img: "https://image.tmdb.org/t/p/original/4ZVSz9Em8tmp45rcxlV2TN33s4v.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Malayalam", url: "go:Moon-on" },
+          { lang: "Tamil", url: "go:Moon2-on" },
+          { lang: "Telugu+Hindi+Kannada", url: "go:Moon3-on" }
+        ],
+        downloadLinks: [
+          { lang: "Malayalam", url: "go:Moon" },
+          { lang: "Tamil", url: "go:Moon2" },
+          { lang: "Telugu+Hindi+Kannada", url: "go:Moon3" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Moonwalk"
+      },
       {
         title: "Pune Highway (2025)",
         popupTitle: "Pune Highway (2025) Hindi",
@@ -515,52 +891,57 @@
           { lang: "Malayalam", url: "go:Padakkal" }
         ],
         telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Padakkalam"
-        }
+        },
+        {
+        title: "Tourist Family (2025)",
+        popupTitle: "Tourist Family (2025) [Hin Mal Kan]",
+        img: "https://image.tmdb.org/t/p/original/3nF9E2pvLTwCYStuWFx6X2IbkXK.jpg",
+        badge: "HD",
+        quality: "HDRip",
+        watchLinks: [
+          { lang: "Hindi+Malayalam+Kannada", url: "go:Tour2-on" }
+        ],
+        downloadLinks: [
+          { lang: "Hindi+Malayalam+Kannada", url: "go:Tour2" }
+        ],
+        telegram: "https://t.me/Mamitha_M4U_bot?start=getfile-Tourist-Family"
+      }
       // 👉 Add more movies here...
     ];
 
     let currentLanguage = "all";
     const itemsPerPage = 10;
     let currentPage = 1;
-    const grid = document.getElementById("movieGrid");
 
     function filterLanguage(lang) {
       currentLanguage = lang;
       currentPage = 1;
-      renderPage(currentPage);
+      renderPage();
     }
 
-    function renderPage(page) {
+    function renderPage() {
+      const grid = document.getElementById("movieGrid");
       grid.innerHTML = "";
 
-      const filtered = currentLanguage === "all"
-        ? movies
-        : movies.filter(m =>
-            (m.watchLinks || []).some(link =>
-              (link.lang || "").toLowerCase().includes(currentLanguage.toLowerCase())
-            )
-          );
+      const filtered = currentLanguage === "all" ? movies : movies.filter(m =>
+        m.watchLinks.some(link => (link.lang || "").toLowerCase().includes(currentLanguage.toLowerCase()))
+      );
 
-      const start = (page - 1) * itemsPerPage;
+      const start = (currentPage - 1) * itemsPerPage;
       const end = start + itemsPerPage;
       const pageItems = filtered.slice(start, end);
 
-      pageItems.forEach((movie) => {
+      pageItems.forEach(movie => {
         const card = document.createElement("div");
-        card.className = "movie-card cursor-pointer";
+        card.className = "movie-card";
         card.onclick = () => openModal(movie);
         card.innerHTML = `
-          <span class="absolute top-2 left-2 bg-pink-600 text-white text-xs font-bold px-2 py-0.5 rounded">${movie.badge}</span>
-          <img src="${movie.img}" class="w-full h-[260px] object-cover" alt="${movie.title}">
-          <div class="play-overlay">
-            <div class="play-circle"><div class="play-icon"></div></div>
-          </div>
-          <div class="p-2">
-            <p class="text-sm font-semibold truncate-ellipsis">${movie.title}</p>
-            <div class="flex justify-between items-center mt-1 text-xs text-gray-600">
-              <span>${movie.quality}</span>
-              <span class="italic bg-pink-500 text-white px-1 rounded">${movie.badge}</span>
-            </div>
+          <span class="badge">${movie.badge}</span>
+          <img src="${movie.img}" loading="lazy" alt="${movie.title}">
+          <div class="play-overlay"><div class="play-circle"><div class="play-icon"></div></div></div>
+          <div class="movie-info">
+            <div class="movie-title">${movie.title}</div>
+            <div class="quality">${movie.quality}</div>
           </div>`;
         grid.appendChild(card);
       });
@@ -571,61 +952,36 @@
 
     function openModal(movie) {
       document.getElementById("modalTitle").innerText = movie.popupTitle || movie.title;
-
-      const watchDiv = document.getElementById("watchBtn");
-      watchDiv.innerHTML = "";
-      if (movie.watchLinks) {
-        movie.watchLinks.forEach(link => {
-          watchDiv.innerHTML += `
-            <a href="${link.url}" target="_blank"
-              class="block bg-pink-600 text-white py-2 rounded mb-2 font-bold">
-              Watch Online (${link.lang})
-            </a>`;
-        });
-      }
-
-      const downloadDiv = document.getElementById("downloadBtn");
-      downloadDiv.innerHTML = "";
-      if (movie.downloadLinks) {
-        movie.downloadLinks.forEach(link => {
-          downloadDiv.innerHTML += `
-            <a href="${link.url}" target="_blank"
-              class="block bg-green-600 text-white py-2 rounded mb-2 font-bold">
-              Download (${link.lang})
-            </a>`;
-        });
-      }
-
+      document.getElementById("watchBtn").innerHTML = movie.watchLinks.map(link => `<a href="${link.url}" target="_blank" class="btn btn-watch">Watch (${link.lang})</a>`).join('');
+      document.getElementById("downloadBtn").innerHTML = movie.downloadLinks.map(link => `<a href="${link.url}" target="_blank" class="btn btn-download">Download (${link.lang})</a>`).join('');
       document.getElementById("telegramBtn").href = movie.telegram || "#";
-      document.getElementById("modal").classList.remove("hidden");
-      document.getElementById("modal").classList.add("flex");
+      document.getElementById("modal").style.display = "flex";
     }
 
     function closeModal() {
-      document.getElementById("modal").classList.add("hidden");
-      document.getElementById("modal").classList.remove("flex");
+      document.getElementById("modal").style.display = "none";
     }
 
     function nextPage() {
       currentPage++;
-      renderPage(currentPage);
+      renderPage();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function prevPage() {
       if (currentPage > 1) {
         currentPage--;
-        renderPage(currentPage);
+        renderPage();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
 
-    renderPage(currentPage);
+    renderPage();
   </script>
+  <script defer src='//debtdispleaseboss.com/29/99/aa/2999aa90e5d86f11b727ee915517276a.js'></script>
   
   <!-- ✅ Adsterra Social Bar Script -->
  <script type='text/javascript' src='//debtdispleaseboss.com/29/99/aa/2999aa90e5d86f11b727ee915517276a.js'></script>
   
-  
 </body>
-</html>
+                                                      </html>
